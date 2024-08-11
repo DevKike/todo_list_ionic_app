@@ -84,11 +84,10 @@
                         </ion-item>
                                               
                         <ion-item-options slot="end">
-                          <ion-item-option color="danger" expandable="true" id="present-alert" (click)="setTaskToDelete(task)">
+                          <ion-item-option color="danger" expandable="true" (click)="deleteTask(task)">
                             <ion-icon slot="icon-only" name="trash"></ion-icon>
                           </ion-item-option>
                         </ion-item-options>
-                        <ion-alert trigger="present-alert" class="custom-alert" header="Are you sure?" [buttons]="alertButtons"></ion-alert>
                       </ion-item-sliding>
                     </ion-list>
                 }

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AlertController } from '@ionic/angular';
 
 interface ITask {
   title: string;
@@ -20,15 +21,20 @@ export class HomePage {
 
   public tasks: ITask[] = [];
   public taskDone: boolean = false;
-  public taskToDelete!: ITask;
 
-  constructor() {
+  constructor(private alertController: AlertController) {
     this.initForm();
   }
 
   private initForm() {
-    this.title = new FormControl('', [Validators.required, Validators.minLength(3)]);
-    this.description = new FormControl('', [Validators.required, Validators.minLength(10)]);
+    this.title = new FormControl('', [
+      Validators.required,
+      Validators.minLength(3),
+    ]);
+    this.description = new FormControl('', [
+      Validators.required,
+      Validators.minLength(10),
+    ]);
 
     this.taskForm = new FormGroup({
       title: this.title,
@@ -47,25 +53,26 @@ export class HomePage {
     this.taskForm.reset();
   }
 
-  public deleteATask(task: ITask) {
-    this.tasks = this.tasks.filter((t) => t !== task);
+  public async deleteTask(task: ITask) {
+    const alert = await this.alertController.create({
+      header: 'Are you sure?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Delete',
+          handler: () => {
+            this.deleteTaskFromList(task);
+          },
+        },
+      ],
+    });
+    await alert.present();
   }
 
-  public alertButtons = [
-    {
-      text: 'No',
-      cssClass: 'alert-button-cancel',
-    },
-    {
-      text: 'Yes',
-      cssClass: 'alert-button-confirm',
-      handler: () => {
-        this.deleteATask(this.taskToDelete);
-      }
-    },
-  ];
-
-  public setTaskToDelete(task: ITask) {
-    this.taskToDelete = task;
+  public deleteTaskFromList(task: ITask) {
+    this.tasks = this.tasks.filter((t) => t !== task);
   }
 }
