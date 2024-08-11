@@ -1,20 +1,104 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    <ion-title> Todo List App </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-card>
+    <form [formGroup]="taskForm" (ngSubmit)="doRegister()">
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-input formControlName="title" label="Title:" placeholder="A title example"></ion-input>
+          </ion-col>
+        </ion-row>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+        @if (title.errors && (title.touched || title.dirty) && !title.value) {
+        <ion-row>
+          <ion-col>
+            <ion-text color="danger">Title is required</ion-text>
+          </ion-col>
+        </ion-row>
+        }
+
+        @if (title.value && title.value.length < 3) {
+          <ion-row>
+            <ion-col>
+              <ion-text color="danger">Title must be at least 3 characters</ion-text>
+            </ion-col>
+          </ion-row>
+        }
+
+        <ion-row>
+          <ion-col>
+            <ion-input formControlName="description" label="Description:"
+              placeholder="A description example"></ion-input>
+          </ion-col>
+        </ion-row>
+
+        @if (description.errors && (description.touched || description.dirty) && !description.value) {
+        <ion-row>
+          <ion-col>
+            <ion-text color="danger">Description is required</ion-text>
+          </ion-col>
+        </ion-row>
+        }
+
+        @if (description.value && description.value.length < 10) {
+          <ion-row>
+            <ion-col>
+              <ion-text color="danger">Description must be at least 10 characters</ion-text>
+            </ion-col>
+          </ion-row>
+        }
+
+        <ion-row>
+          <ion-col>
+            <ion-button [disabled]="taskForm.invalid" type="submit" color="success">
+              <ion-icon slot="start" name="add-circle"></ion-icon>
+              Create task
+            </ion-button>
+          </ion-col>
+        </ion-row>
+
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Created tasks:</ion-card-title>
+            <ion-card-content>
+              @if (tasks.length > 0) {
+                @for (task of tasks; track $index) {
+                    <ion-list [inset]="true">
+                      <ion-item-sliding>
+                        <ion-item button detail="true">
+                          <ion-thumbnail slot="start" >
+                            <img src="https://www.svgrepo.com/show/359395/todo-txt.svg" alt="icon">
+                          </ion-thumbnail>
+                          <ion-label>
+                            <h2>{{ task.title }}</h2>
+                            <p>{{ task.description }}</p>
+                            <ion-toggle justify="end" [checked]="task.done" (ionChange)="task.done = $event.detail.checked">
+                              <span [class.done-true]="task.done" [class.done-false]="!task.done">Done</span>
+                            </ion-toggle>
+                          </ion-label>
+                        </ion-item>
+                                              
+                        <ion-item-options slot="end">
+                          <ion-item-option color="danger" expandable="true" id="present-alert" (click)="setTaskToDelete(task)">
+                            <ion-icon slot="icon-only" name="trash"></ion-icon>
+                          </ion-item-option>
+                        </ion-item-options>
+                        <ion-alert trigger="present-alert" class="custom-alert" header="Are you sure?" [buttons]="alertButtons"></ion-alert>
+                      </ion-item-sliding>
+                    </ion-list>
+                }
+              } @else {
+                <ion-text>No tasks registered</ion-text>
+              }
+            </ion-card-content>
+          </ion-card-header>
+        </ion-card>
+      </ion-grid>
+    </form>
+  </ion-card>
 </ion-content>
